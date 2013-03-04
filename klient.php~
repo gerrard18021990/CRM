@@ -1,0 +1,46 @@
+<head>
+<script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+</head>
+<form>
+<table>
+<tr>
+	<td>Искать по:</td>
+	<td>
+	<select id="poisk">
+	<option value="1">ФИО</option>
+	<option value="2">Телефон</option>
+	<option value="3">Email</option>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>Текст поиска</td>
+	<td><input type="text" id="text_poisk" /></td>
+</tr>
+<tr>
+	<td><input type="button" value="Найти" onclick="search()" /></td>
+</tr>
+</table>
+</form>
+<div id="result"></div>
+
+<script type="text/javascript">
+function search(){
+	var poisk = document.getElementById('poisk').value;
+	var text_poisk = document.getElementById('text_poisk').value;
+	if(text_poisk == ""){
+		alert("Введите текст в поле ввода");
+	}else{
+		$.ajax({
+			url: 'search.php',
+			type: 'GET',
+			data: 'stroka=' + text_poisk,
+			success: function sear(a){
+				document.getElementById('result').innerHTML = a;
+			}
+		});
+
+	}
+}
+
+</script>

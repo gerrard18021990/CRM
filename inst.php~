@@ -1,0 +1,54 @@
+<form method="POST" action="inst.php">
+<table>
+<tr>
+	<td>HOST</td>
+	<td>Login</td>
+	<td>Password</td>
+	<td>Base</td>
+</tr>
+<tr>
+	<td><input type="text" name="host" value="localhost" /></td>
+	<td><input type="text" name="login" value="ilya" /></td>
+	<td><input type="text" name="pass" value="123123" /></td>
+	<td><input type="text" name="base" value="site001_ilya" /></td>
+</tr>
+<tr>
+	<td><input type="submit" value="Установить" name="go"></td>
+</tr>
+</table>
+</form>
+
+<?php
+
+//instal таблицу клиент
+if(isset($_POST['go'])){
+	$host = $_POST['host'];
+	$login = $_POST['login'];
+	$pass = $_POST['pass'];
+	$base = $_POST['base'];
+
+	$mis = "Соединение успешно!";
+	if(!$o = mysql_connect ($host, $login, $pass)) $mis = "Ошибка подключения";
+	if(!mysql_select_db($base) and $o) $mis = "Ошибка выбора базы";
+	echo $mis;
+/*
+	mysql_query("CREATE TABLE klient(
+		id int(11) auto_increment,
+		photo varchar(255),
+		FIO varchar(255),
+		data date,
+		telephone varchar(255),
+		email varchar(255),
+		pasport varchar(255),
+		primary key(id)
+	)");
+/*
+	$data = "<?php \r\n class Connect{\r\n var \$host = \"$host\"; \r\n var \$password = \"$pass\";\r\n var \$user = \"$login\";\r\n var \$db = \"$base\";\r\n}\r\n?>";
+	if(file_exists('connect.php')) echo "Файл уже создан";
+	else
+		$fh = fopen('connect.php', "a+");
+		fwrite($fh, $data);
+		fclose($fh);
+	mysql_close();*/
+}
+?>

@@ -1,0 +1,42 @@
+
+<body>
+<p>123</p>
+<script type="text/javascript">
+var ip = '<?=echo $_SERVER["REMOTE_ADDR"]=?>'; //без пробелов! 
+alert("Your IP address is "+ip);
+
+</script>
+
+</body>
+/*<?php
+$ip = $_SERVER['REMOTE_ADDR'];
+
+function from_ip($ip='', $to = 'utf-8'){
+$ip = ($ip) ? $ip : $_SERVER['REMOTE_ADDR'];
+$url = "http://ipgeobase.ru:7020/geo?ip=".$ip;
+
+$xml =  simplexml_load_file($url);
+//$xml = simplexml_load_file('x.xml');
+//echo $xml->ip->lng;
+echo $xml->ip->message;
+if($xml->ip->message){
+echo "2";
+	if( $to == 'utf-8' ){
+		return $xml->ip->message;
+	}else{
+		if(function_exists('iconv')) 
+			return iconv( "UTF-8", $to . "//IGNORE",$xml->ip->message);
+		else return "The library iconv is not supported by your server";
+	}
+	}else{
+		if($to == 'utf-8'){
+			return $xml->ip->region;
+		}else{
+			if(function_exists('iconv'))
+				return iconv( "UTF-8", $to . "//IGNORE",$xml->ip->region);
+			else return "The library iconv is not supported by your server";
+		}
+	}
+}
+echo from_ip('','utf-8');
+?>*/

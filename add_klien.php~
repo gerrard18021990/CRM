@@ -1,0 +1,26 @@
+<?php
+include_once('config.php');
+$conf = new JConfig;
+$host = $conf->host;
+$login = $conf->user;
+$pass = $conf->password;
+$base = $conf->db;
+
+
+$photo = $_POST['photo'];
+$tel = $_POST['telephone'];
+$email = $_POST['email'];
+$pasport = $_POST['pasport'];
+$date = $_POST['date'];
+$fio = $_POST['fio'];
+
+mysql_connect($host, $login, $pass);
+mysql_select_db($base);
+/*
+$res = mysql_query("INSERT INTO klient (photo, FIO, date, telephone, email, pasport) 
+				VALUES ('$photo', '$fio', '$date', '$tel', '$email', '$pasport')");
+echo $res;
+*/
+$r = mysql_query("describe klient");
+var_dump($r);
+?>

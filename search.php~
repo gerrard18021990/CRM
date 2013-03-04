@@ -1,0 +1,25 @@
+<?php
+$text_search = $_POST['stroka'];
+
+include_once('config.php');
+$conf = new JConfig;
+$host = $conf->host;
+$login = $conf->user;
+$pass = $conf->password;
+$base = $conf->db;
+
+
+mysql_connect($host, $login, $pass);
+mysql_select_db($base);
+
+$zapros = "SELECT * FROM klient";
+$res = mysql_query($zapros);
+
+while($r = mysql_fetch_assoc($res)){
+	$fio = $r['FIO'];
+	echo $fio."<br />";
+	
+}
+
+
+?>

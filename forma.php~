@@ -1,0 +1,1210 @@
+<html>
+<head>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/ajaxupload.js"></script>
+<script type="text/javascript" src="js/download.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--  Левое меню  -->
+<table>
+<tr><td valign="top">
+<div id="menu" class="menu">
+<div class="link_menu" onclick="add_klient()" title="Новый турист">Турист</div>
+<div class="link_menu" onclick="pod_menu()">Объекты</div>
+<div class="link_menu_l" style="display: none" id="room_open" onclick="room()" title="Просмотр номеров">Номера</div>
+<div class="link_menu_l" style="display: none" id="object_open" onclick="object()" title="Просмотр объектов">Объекты</div>
+<div class="link_menu_l" style="display: none" id="region_open" onclick="region()" title="Просмотр регионов">Регионы</div>
+<div class="link_menu" onclick="show_schet()" title="Просмотр счетов и бонусов">Счета</div>
+</div>
+</td>
+<td valign="top">
+
+<div id="add_klient">
+
+<!--- Невидимый блок загрузки фото клиента --->
+<div id="select_photo" class="select_p">
+<div class="down">
+	<table>
+	<tr>
+		<td colspan="2" align="center"><input type="button" id="uploadButton" value="Выбрать фото" class="button_s" /></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><img scr="logo.jpg" class="photo_view" id="photo_view" /></td>
+	</tr>
+	<tr>
+		<!--- Добавление фото в карточку клиента  --->
+		<td><input type="button" value="Сохранить фото" onclick="download_photo()" class="button_s" /></td>
+		<!--- Удаление фото с сервера, отмена --->
+		<td><input type="button" value="Отмена" onclick="cancel_down()" class="button_s" /></td>
+	</tr>
+	</table>
+</div>
+</div>
+
+<!--- Форма добавления данных о клиенте (основные) --->
+<div id="other_find_klient"></div>
+<form>
+<fieldset style="width: 480px">
+<legend>Форма добавления клиента</legend>
+<table>
+<!-- Блок с фото клиента, поле для ввода имени --->
+<tr>
+	<td rowspan="3" style="text-align: center"><img id="photo" onclick="add_photo()" src="images/NoPicture.jpg"  /><div class="add_pic" onclick="add_photo()" title="Добавить картинку">Добавить картинку</div></td>
+	<td valign="top"><input type="text" tabindex="1" onkeypress="other_klient()" onchange="other_klient()"  onkeyup="other_klient()" id="surname" value="Фамилия" onfocus="clear_s(1)" class="input_text"  onblur="find_klient_blur()" title="Фамилия" /></td>
+	<td valign="top"><input type="date" id="date" breaks tabindex="4" class="input_text" title="Дата рождения" /></td>	
+</tr>
+<tr>
+	<td valign="top"><input type="text" id="name" tabindex="2" value="Имя" class="input_text" onblur="cl(2)" title="Имя" onfocus="clear_s(2)" /></td>
+	<td valign="top"><input type="text" id="passport" onblur="cl(4)" tabindex="0" class="input_text" value="Паспорт" title="Паспорт" onfocus="clear_s(4)" /></td>
+</tr>
+<tr>
+	<td valign="top"><input type="text" id="otch" value="Отчество" tabindex="3" class="input_text" onblur="cl(3)" onfocus="clear_s(3)" title="Отчество"  /></td>
+	<td valign="top"><input type="text" id="address" class="input_text" onblur="cl(5)" tabindex="0" value="Адрес" onfocus="clear_s(5)" title="Адрес" /></td>
+</tr>
+<!-- Поле для ввода телефона. Позволяет добавлять бесконечное количество телефонов клиента --->
+<tr>
+	<td colspan="3">
+	<div style="border-top: 1px solid #c0c0c0; padding-top: 5px">
+	<table>
+	<tr>
+		<td valign="top" colspan="2"><input type="text" onfocus="clear_s(6)" onblur="cl(6)" value="Телефон" id="telephone1" class="input_text" onfocus="tel_focus(1)" onblur="tel_blur(1)" title="Телефон" /></td>
+		<td rowspan="4"><textarea id="note_k" onfocus="clear_s(7)" title="Примечание" onblur="cl(7)">Примечание</textarea></td>
+	</tr>
+	<!--- Кнопка добавления нового пустого поля для записи телефона --->
+	<tr id="str">
+		<td valign="top" style="text-align: center"><span id="add_new" title="Добавить новый телефон" onclick="new_tel()">Добавьте телефон</span></td>
+	</tr>
+	<!-- Поле для email --->
+	<tr>
+		<td colspan="2" valign="top"><input value="Email" type="text" onfocus="clear_s(8)" onblur="cl(8)" title="Email" id="email" class="input_text" /></td>
+	</tr>
+	<!-- Кнопка добавления счетов --->
+	<tr>
+		<td style="text-align: center"><span style="border-bottom: 1px dashed black" onclick="show_social()" title="Развернуть/свернуть соц.сети">Соц.сети</span></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+		<!--  Поля для ввода контактных данных клиента в соц.сетях  -->
+		<div id="tr_social" style="display: none">
+		<table>
+		<tr>
+			<td><input value="ICQ" onfocus="clear_s(9)" onblur="cl(9)" type="text" id="ICQ" title="ICQ" class="input_text" /></td>
+		</tr>
+		<tr>
+			<td><input value="Facebook" type="text" id="facebook" class="input_text" onfocus="clear_s(10)" title="Facebook" onblur="cl(10)" /></td>
+		</tr>
+		<tr>
+			<td><input value="Вконтакте" type="text" id="vk" class="input_text" onfocus="clear_s(11)" onblur="cl(11)" title="Вконтакте" /></td>
+		</tr>
+		<tr>
+			<td><input value="Одноклассники" type="text" id="od_cl" class="input_text" onfocus="clear_s(12)" onblur="cl(12)" title="Одноклассники" /></td>
+		</tr>
+		<tr>
+			<td><input value="Twitter" title="Twitter" type="text" id="twitter" class="input_text" onfocus="clear_s(13)" onblur="cl(13)" /></td>
+		</tr>
+		<tr>
+			<td><input value="Skype" type="text" title="Skype" id="skype" class="input_text" onfocus="clear_s(14)" onblur="cl(14)" /></td>
+		</tr>
+		<tr>
+			<td><input value="Мой мир" type="text" id="mail" title="Мой мир" class="input_text" onfocus="clear_s(15)" onblur="cl(15)" /></td>
+		</tr>
+		</table>
+		</div>
+		</td>
+		<td valign="top"></td>
+	</tr>
+	</table>
+	</div>
+</td>
+</tr>
+</table>
+</fieldset>
+</form>
+</td>
+<td valign="top">
+<!--  Форма добавления счетов -->
+<form  id="reckoning">
+<fieldset style="width: 400px">
+<legend>Форма добавления счета</legend>
+<table>
+<tr>
+	<td><span>Дата</span></td>
+	<td><input type="date" class="input_text" id="date_z" title="Дата заезда" /></td>
+	<td><span>Кол-во дней</span></td>
+	<td><input type="text" class="input_text_l" maxlength="3" id="days" title="Количество дней" /></td>
+</tr>
+<tr id="klient_region">
+
+</tr>
+<tr id="klient_object">
+
+</tr>
+<tr id="klient_room">
+
+</tr>
+<tr>
+	<td><span>Сумма (число)</span></td>
+	<td class="td_left" colspan="3"><input type="text" class="input_text" id="sum" title="Сумма" /></td>
+</tr>
+<tr>
+	<td><span>Примечание</span></td>
+	<td class="td_left" colspan="3"><input type="text" class="input_text" id="note" title="Примечание" /></td>
+</tr>
+<tr>
+	<td><span>Номер счета в 1С</span></td>
+	<td class="td_left" colspan="3"><input type="text" class="input_text" id="C" title="Номер счета в 1С" /></td>
+</tr>
+<tr>
+	<td colspan="4" align="center"><input type="button" class="button_s" value="Добавить" onclick="save_all()" title="Сохранить" /></td>
+</tr>
+</table>
+</fieldset>
+</form>
+</div>
+
+<!-- Блок объекты  -->
+<div id="objects" style="display: none">
+</div>
+<div id="schet" style="display: none">
+<table>
+<tr id='poisk_for_surname'>
+	<td><span>Форма поиска по фамилии</span></td>
+	<td><input type="text" onkeypress="find_klient()" onchange="find_klient()" onkeyup="find_klient()" title="Введите запрос" id="poisk" class="input_search" /></td>
+	<td><input type="button" class="but_search" onclick="find_all_klient()" title='Поиск' /></td>
+</tr>
+</table>
+<div id="find"></div>
+<div id='klients'></div>
+<div id="see_klient"></div>
+</div>
+
+
+</td>
+</tr>
+</table>
+
+<script type="text/javascript">
+
+var str = 'zapros=sel_reg_for_reck';
+$.ajax({
+	url: 'mysql.php',
+	type: 'POST',
+	data: str,
+	success: function sel(a){
+		document.getElementById('klient_region').innerHTML = a;
+	}
+});
+
+var i = 1;
+var izm = 1;
+var kol = 1;
+var pos = 0;
+var show = 0;
+var max_bonus;
+// Функция добавления клиента и его данных в базу
+function save_all(){
+	//Определяется сегоднящняя дата (дата заявки)
+	date = new Date();
+	var year = date.getUTCFullYear();
+	var month = date.getMonth();
+	month++;
+	var day = date.getDate();
+	var today = year + '-' + month + '-' + day;
+	
+	var t = 1, s, d, ss;
+/*
+	//tel - строка запроса. kol указывает на то, сколько телефонов было добавлено
+	var tel = '&k_telephone=' + kol;
+	//В цикле просматриваются все добавленные телефоны, формируется строка запроса
+	for(t;t<=kol;t++){
+		//s - вид/тип телефона, d - номер телефона
+		if(kol != 1)
+			s = document.getElementById('tel_text'+t).value;
+		else s = 'Телефон';
+		d = document.getElementById('telephone'+t).value;
+		switch (s){
+			case 'Телефон': ss = 'telephone'; break;
+			case 'Домашний': ss = 'home'; break;
+			case 'Мобильный': ss = 'mobile'; break;
+			case 'Рабочий': ss = 'work'; break;
+			case 'Основной': ss = 'main'; break;
+			case 'Домашний факс': ss = 'fax_home'; break;
+			case 'Рабочий факс': ss = 'fax_work'; break;
+			case 'Введите текст': ss = 'pers'; break;
+			case 'Google Voice': ss = 'goo_v'; break;
+			case 'Пейджер': ss = 'pager'; break;
+		}
+		if(s != ''){
+			tel = tel + '&t' + t + '=' + ss + '&n' + t + '=' + d;
+		}
+	}
+
+*/
+	//Чтение других введенных данных
+	var telephone = document.getElementById('telephone1').value;
+	var name = document.getElementById('name').value;
+	var surname = document.getElementById('surname').value;
+	var otch = document.getElementById('otch').value;
+	var email = document.getElementById('email').value;
+	var passport = document.getElementById('passport').value;
+	var date = document.getElementById('date').value;
+	var address = document.getElementById('address').value;
+	var photo = document.getElementById('photo_view').getAttribute('src');
+	var id_reg = document.getElementById('sel_reg').value;
+	var el = document.getElementById('sel_obj');
+	if(el) var id_obj = document.getElementById('sel_obj').value;
+	el = document.getElementById('sel_room');
+	if(el) var id_room = document.getElementById('sel_room').value;
+	var sum = document.getElementById('sum').value;
+	var C = document.getElementById('C').value;
+	var note = document.getElementById('note').value;
+	
+	var days = document.getElementById('days').value;
+	var date_z = document.getElementById('date_z').value;
+	//Данные соц сетей
+	var note_k = document.getElementById('note_k').value;
+	if(note_k == 'Примечание') note_k = '';
+	var icq = document.getElementById('ICQ').value;
+	if(icq == 'ICQ') icq = '';
+	var vk = document.getElementById('vk').value;
+	if(vk == 'Вконтакте') vk= '';
+	var facebook = document.getElementById('facebook').value;
+	if(facebook == 'Facebook') facebook= '';
+	var od_cl = document.getElementById('od_cl').value;
+	if(od_cl == 'Одноклассники') od_cl= '';
+	var twitter = document.getElementById('twitter').value;
+	if(twitter == 'Twitter') twitter= '';
+	var mail = document.getElementById('mail').value;
+	if(mail == 'Мой мир') mail= '';
+	var skype = document.getElementById('skype').value;
+	if(skype == 'Skype') skype= '';
+	var set = '&skype=' + skype + '&icq=' + icq + '&vk=' + vk + '&facebook=' + facebook + '&od_cl=' + od_cl + '&twitter=' + twitter + '&mail=' + mail;
+	//Обязательное поле - имя клиента
+	if((surname == '') || (surname == 'Фамилия')){
+		alert('Не введены данные: фамилия');
+	}else if ((name == '') || (name == 'Имя')){
+		alert('Не введены данные: имя');
+	}else if ((otch == '') || (otch == 'Отчество')){
+		alert('Не введены данные: отчество');
+	}else{
+		//Формирование строки запроса
+		var str = 'zapros=save_all&surmane=' + surname + '&name=' + name + '&otch=' + otch + '&telephone=' + telephone + '&email=' + email + '&passport=' + passport + '&date=' + date + '&photo=' + photo + '&id_reg=' + id_reg + '&id_obj=' + id_obj + '&id_room=' + id_room + '&C=' + C + '&sum=' + sum + '&note=' + note + '&days=' + days + '&date_z=' + date_z + '&today=' + today + set + '&address=' + address + '&note_k=' + note_k;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function add(a){
+				//При успешном сохранении данных выводится сообщение, все поля обнуляются
+				if(a == 1){
+					alert('Данные успешно сохранены');
+					location.reload();
+				}else if(a == 2)
+					alert('В поле СУММА введите число!');
+				else alert('Ошибка!');
+			}
+		});
+	
+	}	
+}
+
+
+//Функция вызывается при нажатии на кнопку Добавить картинку. Появляется новое окно.
+function add_photo(){
+	$('#select_photo').removeClass('select_p').addClass('select_photo_active').show();
+}
+
+//Функция вызывается при нажатии в окне выбора фото кнопки Отмена
+function cancel_down(){
+	$('#select_photo').removeClass('select_photo_active').addClass('select_p').show();
+	var str = 'act=delete&file=' + document.getElementById('photo_view').getAttribute('src');
+	$.ajax({
+		url: 'upload.php',
+		type: 'POST',
+		data: str,
+	});	
+}
+
+//Функция вызывается при нажатии в окне выбора фото кнопки Сохранить. Фото клиента обновляется
+function download_photo(){
+	var attr = document.getElementById('photo_view').getAttribute('src');
+	document.getElementById('photo').setAttribute('src', attr);
+	$('#select_photo').removeClass('select_photo_active').addClass('select_p').show();
+}
+
+//Поля для добавления информации о контактах клиента в соц сетях
+function show_social(){
+	$('#tr_social').toggle();
+
+}
+
+//Функция при клике на поле ввода телефона. Фокус
+function tel_focus(i){
+	$('#tel_text'+i).show();
+	$('#select'+i).hide();
+	var s = document.getElementById('tel_text'+i).name;
+	if(s != 'see'){
+		$('#tel_text'+i).attr('name', 'see');
+		var sss = document.getElementById('select'+i).value;
+		var ss;
+		switch (sss){
+			case 'home': ss = 'Домашний'; break;
+			case 'mobile': ss = 'Мобильный'; break;
+			case 'work': ss = 'Рабочий'; break;
+			case 'main': ss = 'Основной'; break;
+			case 'fax_home': ss = 'Домашний факс'; break;
+			case 'fax_work': ss = 'Рабочий факс'; break;
+			case 'pers': ss = 'Введите текст'; break;
+			case 'goo_v': ss = 'Google Voice'; break;
+			case 'pager': ss = 'Пейджер'; break;
+		}
+		document.getElementById('tel_text'+i).value = ss;
+	}
+
+	
+}
+
+function clear_s(i){
+	if(i == 1){
+		if(document.getElementById('surname').value == 'Фамилия')
+			document.getElementById('surname').value = '';
+	}else if(i == 2){
+		if(document.getElementById('name').value == 'Имя')
+			document.getElementById('name').value = '';
+	}else if(i == 3){
+		if(document.getElementById('otch').value == 'Отчество')
+			document.getElementById('otch').value = '';
+	}else if(i == 4){
+		if(document.getElementById('passport').value == 'Паспорт')
+			document.getElementById('passport').value = '';
+	}else if(i == 5){
+		if(document.getElementById('address').value == 'Адрес')
+			document.getElementById('address').value = '';
+	}else if(i == 6){
+		if(document.getElementById('telephone1').value == 'Телефон')
+			document.getElementById('telephone1').value = '';
+	}else if(i == 7){
+		if(document.getElementById('note_k').innerHTML == 'Примечание')
+			document.getElementById('note_k').innerHTML = '';
+	}else if(i == 8){
+		if(document.getElementById('email').value == 'Email')
+			document.getElementById('email').value = '';
+	}else if(i == 9){
+		if(document.getElementById('ICQ').value == 'ICQ')
+			document.getElementById('ICQ').value = '';
+	}else if(i == 10){
+		if(document.getElementById('facebook').value == 'Facebook')
+			document.getElementById('facebook').value = '';
+	}else if(i == 11){
+		if(document.getElementById('vk').value == 'Вконтакте')
+			document.getElementById('vk').value = '';
+	}else if(i == 12){
+		if(document.getElementById('od_cl').value == 'Одноклассники')
+			document.getElementById('od_cl').value = '';
+	}else if(i == 13){
+		if(document.getElementById('twitter').value == 'Twitter')
+			document.getElementById('twitter').value = '';
+	}else if(i == 14){
+		if(document.getElementById('skype').value == 'Skype')
+			document.getElementById('skype').value = '';
+	}else if(i == 15){
+		if(document.getElementById('mail').value == 'Мой мир')
+			document.getElementById('mail').value = '';
+	}
+}
+
+function cl(i){
+	
+	if(i == 2){
+		if(document.getElementById('name').value == '')
+			document.getElementById('name').value = 'Имя';
+	}else if(i == 3){
+		if(document.getElementById('otch').value == '')
+			document.getElementById('otch').value = 'Отчество';
+	}else if(i == 4){
+		if(document.getElementById('passport').value == '')
+			document.getElementById('passport').value = 'Паспорт';
+	}else if(i == 5){
+		if(document.getElementById('address').value == '')
+			document.getElementById('address').value = 'Адрес';
+	}else if(i == 6){
+		if(document.getElementById('telephone1').value == '')
+			document.getElementById('telephone1').value = 'Телефон';
+	}else if(i == 7){
+		if(document.getElementById('note_k').innerHTML == '')
+			document.getElementById('note_k').innerHTML = 'Примечание';
+	}else if(i == 8){
+		if(document.getElementById('email').value == '')
+			document.getElementById('email').value = 'Email';
+	}else if(i == 9){
+		if(document.getElementById('ICQ').value == '')
+			document.getElementById('ICQ').value = 'ICQ';
+	}else if(i == 10){
+		if(document.getElementById('facebook').value == '')
+			document.getElementById('facebook').value = 'Facebook';
+	}else if(i == 11){
+		if(document.getElementById('vk').value == '')
+			document.getElementById('vk').value = 'Вконтакте';
+	}else if(i == 12){
+		if(document.getElementById('od_cl').value == '')
+			document.getElementById('od_cl').value = 'Одноклассники';
+	}else if(i == 13){
+		if(document.getElementById('twitter').value == '')
+			document.getElementById('twitter').value = 'Twitter';
+	}else if(i == 14){
+		if(document.getElementById('skype').value == '')
+			document.getElementById('skype').value = 'Skype';
+	}else if(i == 15){
+		if(document.getElementById('mail').value == '')
+			document.getElementById('mail').value = 'Мой мир';
+	}
+
+}
+
+//Функция при потере фокуса поля телефона
+function tel_blur(i){
+	if(document.getElementById('telephone' +i).value == ''){
+		$('#add_new').hide();
+		
+	}else{
+		$('#add_new').show();
+	}
+	
+}
+
+//Функция добавления нового телефона. Добавляется новая строка в таблицу
+function new_tel(){
+	//if(document.getElementById('telephone' + izm).value != ''){
+		i++;
+		var a = new Array('','','','','','','','','');
+		if(i>8) a[9] = "selected";
+		else a[i] = "selected";
+		$('#str').before("<tr id=tr" + i + "><td><span onclick='select_red(" +i+ ")'><input disabled type='text' class='inp' id='tel_text" +i+ "' name='see' onblur='select_blur(" +i+ ")' /></span><select style='display: none' id='select" +i+ "' class='opt' style='margin-left: -10px'><option value='home'>Домашний</option><option " +a[2]+  " value='mobile'>Мобильный</option><option " +a[3]+ " value='work'>Рабочий</option><option " +a[4]+ " value='main'>Основной</option><option " +a[5]+ " value='fax_work'>Рабочий факс</option><option " +a[6]+ " value='fax_home'>Домашний факс</option><option " +a[7]+ " value='goo_v'>Google Voice</option><option " +a[8]+ " value='pager'>Пейджер</option><option " +a[9]+ " value='pers'>Персонализированный</option></select></td><td><div onclick='show_select(" +i+ ")' class='select_img'  id='select_img" +i+ "'></div></td><td><input type='text' id='telephone" +i+ "' class='input_text' onfocus='tel_focus(" +i+ ")' onblur='tel_blur(" +i+ ")' /></td><td><img src='images/trash.jpg' onclick='sel_delete(" +i+ ")'  /></td></tr>'");
+		izm = i;
+		kol++;
+		var s = document.getElementById('select'+i).value;
+		var ss;
+		switch (s){
+			case 'home': ss = 'Домашний'; break;
+			case 'mobile': ss = 'Мобильный'; break;
+			case 'work': ss = 'Рабочий'; break;
+			case 'main': ss = 'Основной'; break;
+			case 'fax_home': ss = 'Домашний факс'; break;
+			case 'fax_work': ss = 'Рабочий факс'; break;
+			case 'pers': ss = 'Введите текст'; break;
+			case 'goo_v': ss = 'Google Voice'; break;
+			case 'pager': ss = 'Пейджер'; break;
+	
+		}
+		document.getElementById('tel_text'+i).value = ss;
+		
+		
+}
+
+//Удаляется телефон. Удаляется строка в таблице
+function sel_delete(i){
+	$('#tr'+i).hide();
+	kol--;
+}
+
+//Функция по нажатию на кнопку Редактировать (***). Есть возможность отредактировать тип телефона с помощью select
+function show_select(i){
+	var s = document.getElementById('tel_text'+i).name;
+	if((s == 'see') || (s == '')){
+		$('#tel_text'+i).hide();
+		$('#select'+i).show();
+		$('#tel_text'+i).attr('name', 'no_see');
+		
+		
+	}else{
+		$('#tel_text'+i).show();
+		$('#select'+i).hide();
+		$('#tel_text'+i).attr('name', 'see');
+		var sss = document.getElementById('select'+i).value;
+		var ss;
+		switch (sss){
+			case 'home': ss = 'Домашний'; break;
+			case 'mobile': ss = 'Мобильный'; break;
+			case 'work': ss = 'Рабочий'; break;
+			case 'main': ss = 'Основной'; break;
+			case 'fax_home': ss = 'Домашний факс'; break;
+			case 'fax_work': ss = 'Рабочий факс'; break;
+			case 'pers': ss = 'Введите текст'; break;
+			case 'goo_v': ss = 'Google Voice'; break;
+			case 'pager': ss = 'Пейджер'; break;
+	
+		}
+		document.getElementById('tel_text'+i).value = ss;
+		
+	}
+	
+}
+
+function other_klient(){
+	var poisk = document.getElementById('surname').value;
+	if(poisk == '') $('#other_find_klient').hide();
+	else if(show == 0) $('#other_find_klient').show();
+	var str = 'zapros=find_klient&poisk=' + poisk;
+	if(event.keyCode == 40){
+		show = 0;
+		var old = pos;
+		pos++;
+		if(document.getElementById('div'+pos)){
+			select_id = pos;
+			$('#div'+pos).removeClass('no_sel_div').addClass('sel_div');
+			if(document.getElementById('div'+old)){
+				$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+
+			}
+		}else{
+			pos = 0;
+			$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+		}
+	}else if(event.keyCode == 38){
+		var old = pos;
+		pos--;
+		show = 0;
+		if(document.getElementById('div'+pos)){
+			select_id = pos;
+			$('#div'+pos).removeClass('no_sel_div').addClass('sel_div');
+			if(document.getElementById('div'+old)){
+				$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+			}
+		}else{
+			pos = 0;
+			$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+		}
+	}else if(event.keyCode == 13){
+		if(document.getElementById('div'+pos)){
+			var id = document.getElementById('div'+pos).getAttribute('name');
+			$('#add_klient').hide();
+			$('#objects').hide();
+			$('#schet').show();
+			$('#poisk_for_surname').hide();
+			$('#find').hide();
+			$('#reckoning').hide();
+			
+			select_klient(id);
+			var q = 1;
+			document.getElementById('other_find_klient').innerHTML = '';
+			
+		}
+	}else if(event.keyCode == 27){
+		$('#other_find_klient').hide();
+		show = 1;
+
+	}else{
+		if(poisk != ''){
+			show = 0;
+			$.ajax({
+				url: 'mysql.php',
+				type: 'POST',
+				data: str,
+				success: function sel(a){
+					document.getElementById('other_find_klient').innerHTML = a;
+					pos = 0;
+					select_id = 0;
+				}
+			});
+		}
+	}
+}
+
+function find_klient_blur(){
+	$('#other_find_klient').hide();
+	show = 1;
+	if(document.getElementById('surname').value == '')
+		document.getElementById('surname').value = 'Фамилия';
+}
+
+//Функция при клике на тип телефона. Есть возможность отредактировать тип с клавиатуры
+function select_red(i){
+	document.getElementById('tel_text'+i).disabled = false;
+	$('#tel_text'+i).focus();
+
+}
+
+//Потеря фокуса типа телефона
+function select_blur(i){
+	document.getElementById('tel_text'+i).disabled = true;
+}
+
+
+//Функция выбора региона (появляется селект объектов)
+function sel_obj_for_reck(){
+	document.getElementById('klient_room').innerHTML = '';
+	var id_reg = document.getElementById('sel_reg').value;
+	str = 'zapros=sel_obj_for_reck&id_reg=' + id_reg;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('klient_object').innerHTML = a;
+		}
+	});
+}
+
+//Функция выбора номера (появляется селект объектов)
+function sel_room_for_reck(){
+	var id_obj = document.getElementById('sel_obj').value;
+	str = 'zapros=sel_room_for_reck&id_obj=' + id_obj;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('klient_room').innerHTML = a;
+		}
+	});
+}
+
+//Функция перехода по пункту меню Клиент
+function add_klient(){
+	$('#add_klient').show();
+	$('#objects').hide();
+	$('#schet').hide();
+	$('#reckoning').show();
+}
+
+//Функция перехода по пункту меню Объекты
+function pod_menu(){
+	$('#room_open').toggle();
+	$('#object_open').toggle();
+	$('#region_open').toggle();
+	
+}
+
+//Функция пунка меню Счета
+function show_schet(){
+	$('#reckoning').hide();
+	$('#add_klient').hide();
+	$('#poisk_for_surname').show();
+	$('#objects').hide();
+	$('#schet').show();
+	$('#find').hide();
+	document.getElementById('other_find_klient').innerHTML = '';
+	$('#poisk_for_surname').show();
+	document.getElementById('surname').value = '';
+	document.getElementById('find').innerHTML = '';
+}
+
+//Функция вызывается при нажатии на меню слева (пункт Регионы)
+function region(){
+	var str = 'zapros=sel_reg';
+	$('#add_klient').hide();
+	$('#objects').show();
+	$('#reckoning').hide();
+	$('#schet').hide();
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('objects').innerHTML = a;
+		}
+
+
+	});
+}
+
+//Функция вызывается при нажатии на меню слева (пункт Объекты)
+function object(){
+ 	var str = 'zapros=sel_obj';
+	$('#add_klient').hide();
+	$('#objects').show();
+	$('#reckoning').hide();
+	$('#schet').hide();
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('objects').innerHTML = a;
+		}
+
+
+	});
+}
+
+//Функция вызывается при нажатии на меню слева (пункт Номера)
+function room(){
+	var str = 'zapros=sel_room';
+	$('#add_klient').hide();
+	$('#schet').hide();
+	$('#objects').show();
+	$('#reckoning').hide();
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('objects').innerHTML = a;
+		}
+
+
+	});
+}
+
+function sel_room(p){
+	var id_reg = document.getElementById('select_region').value;
+	var element = document.getElementById('select_object');
+	var id_obj = '';
+	if((element) && (p == 1))
+		id_obj = document.getElementById('select_object').value;	
+	var str = 'zapros=sel_room&id_reg=' + id_reg + '&id_obj=' + id_obj;
+	$('#add_klient').hide();
+	$('#schet').hide();
+	$('#objects').show();
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('objects').innerHTML = a;
+		}
+
+
+	});
+
+}
+
+function sel_object(){
+	var id_reg = document.getElementById('select_region').value;
+	var str = 'zapros=sel_obj&id_reg=' + id_reg;
+	$('#add_klient').hide();
+	$('#objects').show();
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('objects').innerHTML = a;
+		}
+
+
+	});
+
+}
+
+
+//Функция добавления региона в архив
+function reg_to_archive(i){
+	var str = 'zapros=reg_to_archive&id_reg=' + i;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str
+	});
+
+	$('#str'+i).remove();
+}
+
+//Функция добавления объекта в архив
+function obj_to_archive(i){
+	var str = 'zapros=obj_to_archive&id_obj=' + i;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str
+	});
+	$('#str'+i).remove();
+}
+
+//Функция добавления номера в архив
+function room_to_archive(i){
+	var str = 'zapros=room_to_archive&id_room=' + i;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str
+	});
+	$('#str'+i).remove();
+}
+
+//Функция сохранения новых номеров (добавление в базу)
+function save_new_room(i){
+	var id_obj = document.getElementById('select_object').value;
+	var name = document.getElementById('new_room'+i).value;
+	var y = i + 1;
+	var str = 'zapros=save_new_room&id_obj=' + id_obj + '&name_room=' + name;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('str'+i).innerHTML = a;
+		}
+	});
+	$('#str'+i).after("<tr id='str" +y+ "'><td><input type='text' id='new_room" +y+ "' class='input_text' /></td><td><input type='button' onclick='save_new_room(" +y+ ")' value='Добавить' class='button_s' /></td></tr>");
+	
+}
+
+//Функция сохранения нового объекта (добавление в базу)
+function save_new_obj(i){
+	var id_reg = document.getElementById('select_region').value;
+	var name = document.getElementById('new_obj'+i).value;
+	var y = i + 1;
+	var str = 'zapros=save_new_obj&id_reg=' + id_reg + '&name_obj=' + name;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('str'+i).innerHTML = a;
+		}
+	});
+	
+	$('#str'+i).after("<tr id='str" +y+ "'><td><input type='text' id='new_obj" +y+ "' class='input_text' /></td><td><input type='button' onclick='save_new_obj(" +y+ ")' value='Добавить' class='button_s' /></td></tr>");
+	
+}
+
+//Функция сохранения нового региона (добавление в базу)
+function save_new_reg(i){
+	var name = document.getElementById('new_reg'+i).value;
+	var str = 'zapros=save_new_reg&name_reg=' + name;
+	var y = i + 1;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('str'+i).innerHTML = a;
+		}
+	});
+	
+	
+	$('#str'+i).after("<tr id='str" +y+ "'><td><input type='text' id='new_reg" +y+ "' class='input_text' /></td><td><input type='button' onclick='save_new_reg(" +y+ ")' value='Добавить' class='button_s' /></td></tr>");
+	
+}
+
+//Форма поиска : выбор клиента из выпадающего списка
+function find_klient(id){
+	var poisk = document.getElementById('poisk').value;
+	if(poisk == '') $('#find').hide();
+	else $('#find').show();
+	var str = 'zapros=find_klient&poisk=' + poisk;
+	if(event.keyCode == 40){
+		var old = pos;
+		pos++;
+		if(document.getElementById('div'+pos)){
+			select_id = pos;
+			$('#div'+pos).removeClass('no_sel_div').addClass('sel_div');
+			if(document.getElementById('div'+old)){
+				$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+
+			}
+		}else{
+			pos = 0;
+			$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+		}
+	}else if(event.keyCode == 38){
+		var old = pos;
+		pos--;
+		
+		if(document.getElementById('div'+pos)){
+			select_id = pos;
+			$('#div'+pos).removeClass('no_sel_div').addClass('sel_div');
+			if(document.getElementById('div'+old)){
+				$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+				
+			}
+		}else{
+			pos = 0;
+			$('#div'+old).removeClass('sel_div').addClass('no_sel_div');
+		}
+	}else if(event.keyCode == 13){
+		if(document.getElementById('div'+pos)){
+			if(!id)
+				id = document.getElementById('div'+pos).getAttribute('name');
+			select_klient(id);
+			document.getElementById('klients').innerHTML = '';
+		}else{
+			if(document.getElementById('poisk') != '')
+				find_all_klient();
+		}
+	}else if(event.keyCode == 27){
+		$('#find').hide();
+	
+	}else{
+		if(poisk != ''){
+			$.ajax({
+				url: 'mysql.php',
+				type: 'POST',
+				data: str,
+				success: function sel(a){
+					document.getElementById('find').innerHTML = a;
+					pos = 0;
+					select_id = 0;
+					show = 0;
+				}
+			});
+		}
+	}
+}
+
+//Функция поиска клиентов по части фамилии
+function find_all_klient(){
+	var poisk = document.getElementById('poisk').value;
+	var str = 'zapros=find_all_klient&poisk=' + poisk;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			if(a == 1) document.getElementById('klients').innerHTML = 'Форма поиска пуста';
+			else if(a == 0) document.getElementById('klients').innerHTML = 'Не удалось найти клиентов';
+			else{
+				document.getElementById('klients').innerHTML = a;
+				document.getElementById('see_klient').innerHTML = '';
+				document.getElementById('find').innerHTML = '';
+			}
+		}
+	});	
+}
+
+//Функция выбора клиента (из формы поиска)
+function select_klient(id){
+	$('#find').hide();
+	var str = 'zapros=see_klient&id_klient=' + id;
+	
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('see_klient').innerHTML = a;
+		}
+	});
+	document.getElementById('poisk').value = '';
+	klietn_schet(id);
+}
+
+//Функция просмотра счета клиента
+function show_schet_klient(id){
+	var str = 'zapros=show_schet_klient&id_schet=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			$('#tr_h'+id).before(a);
+			
+			$('#tr_h'+id).remove();
+			
+		}
+	});
+
+}
+
+//Функция скрытия подробного счета клиента
+function hide_schet_klient(id){
+	var str = 'zapros=hide_shect&id_schet=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			$('#tr_s2'+id).before(a);
+			$('#tr_s1'+id).remove();
+			$('#tr_s2'+id).remove();
+			
+		}
+	});
+}
+
+//Функция добавления нового счета (скрывает владки бонус и счета)
+function new_reck(){
+	$('#new_schet').show();
+	$('#see_schet').removeClass('see_schet_a').addClass('see_schet_noa');
+	$('#see_bonus').removeClass('see_bonus_a').addClass('see_bonus_noa');
+	$('#check').removeAttr('checked');
+	$('#sel_bonus').remove();
+	document.getElementById('info_turist').innerHTML = '';
+}
+
+//Функция сохранения счета
+function save_new_schet(){
+	date = new Date();
+	var year = date.getUTCFullYear();
+	var month = date.getMonth();
+	month++;
+	var bonus;
+	var day = date.getDate();
+	var today = year + '-' + month + '-' + day;	
+	var sum = document.getElementById('n_sum').value;
+	var days = document.getElementById('n_days').value;
+	var note = document.getElementById('n_note').value;
+	var date_z = document.getElementById('n_date_z').value;
+	if(document.getElementById('sel_nobj'))
+		var id_obj = document.getElementById('sel_nobj').value;
+	else var id_obj = '';
+	var id_reg = document.getElementById('sel_nreg').value;
+	if(document.getElementById('sel_nroom'))
+		var id_room = document.getElementById('sel_nroom').value;
+	var C = document.getElementById('n_C').value;
+	var id_klient = document.getElementById('klient').getAttribute('name');
+	if(check.checked){
+		bonus = parseInt(document.getElementById('bonus').value)*(-1);
+		b = bonus * (-1);
+	}
+	if(date == '' ) alert('Введите дату');
+	else if(sum == '') alert('Введите сумму');
+	else if(id_obj == '') alert('Выберите объект');
+	else if(days == '') alert('Введите количество дней');
+	else if(max_bonus < b) alert('Введено неправильное количество бонусов');
+	else{
+		var str = 'zapros=save_schet&id_klient=' + id_klient + '&sum=' + sum + '&days=' + days + '&note=' + note + '&date_z=' + date_z + '&id_obj=' + id_obj + '&id_reg=' + id_reg + '&id_room=' + id_room + '&C=' + C + '&today=' + today + '&bonus=' + bonus;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function sel(a){
+				if(a == 1){
+					if(document.getElementById('sel_nroom'))
+						$('#sel_nroom').hide();
+					$('#but_new_schet').show();
+					document.getElementById('n_C').value = '';
+					document.getElementById('n_date_z').value = '';
+					document.getElementById('n_sum').value = '';
+					document.getElementById('n_days').value = '';
+					document.getElementById('n_note').value = '';
+					document.getElementById('n_date_z').value = '';
+					$('#sel_nobj').hide();
+					$('#new_schet').hide();
+					alert('Данные сохранены');
+					select_schet();
+					
+				}else if(a == 2)
+					alert('В поле СУММА введите число!');
+				else alert('Ошибка!');
+			}
+	});
+	str = 'zapros=all_bonus&id_klient=' + id_klient;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function q(k){
+			document.getElementById('all_bonus').innerHTML = k;
+		}
+	});
+	}
+	}
+
+//Функция выбора объекта (появляется селект объектов)
+function sel_obj_for_nreck(){
+	document.getElementById('kl_room').innerHTML = '';
+	var id_reg = document.getElementById('sel_nreg').value;
+	str = 'zapros=sel_obj_for_nreck&id_reg=' + id_reg;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('kl_object').innerHTML = a;
+		}
+	});
+
+}
+
+//Функция выбора номера (появляется селект объектов)
+function sel_room_for_nreck(){
+	var id_obj = document.getElementById('sel_nobj').value;
+	str = 'zapros=sel_room_for_nreck&id_obj=' + id_obj;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('kl_room').innerHTML = a;
+		}
+	});
+}
+
+//Функция вызывается при нажатии на чекбокс добавления поля бонус
+function checked_bonus(){
+	if(check.checked){
+		var id_klient = document.getElementById('klient').getAttribute('name');
+		var sum = document.getElementById('n_sum').value;
+		var str = 'zapros=add_bonus&id_klient=' + id_klient;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function sel(a){
+				if(document.getElementById('sel_bonus'))
+					$('#sel_bonus').remove();
+				$('#add_bonus').after(a);
+				var b = parseInt(document.getElementById('bonus').value);
+				sum = parseInt(sum);
+				max_bonus = parseInt(document.getElementById('bonus').value);
+				var res = sum - b;
+				document.getElementById('itog_sum').innerHTML = res;
+
+			}
+		});
+	
+	}
+	if(!check.checked)
+		$('#sel_bonus').remove();
+}
+
+//Изменение в поле сумма
+function change_sum(){
+	if(check.checked){
+		var bon = parseInt(document.getElementById('bonus').value);
+		var sum = parseInt(document.getElementById('n_sum').value);
+		var res = sum - bon;
+		document.getElementById('itog_sum').innerHTML = res;
+	}
+
+}
+
+//Функция при выборе вкладки счета
+function select_schet(){
+	$('#new_schet').hide();
+	$('#see_bonus').removeClass('see_bonus_a').addClass('see_bonus_noa');
+	$('#see_schet').removeClass('see_schet_noa').addClass('see_schet_a');
+	var id = document.getElementById('klient').getAttribute('name');
+	klietn_schet(id);
+}
+
+//Функция при выборе вкладки бонусы
+function select_bonus(){
+	$('#new_schet').hide();
+	$('#see_schet').removeClass('see_schet_a').addClass('see_schet_noa');
+	$('#see_bonus').removeClass('see_bonus_noa').addClass('see_bonus_a');
+	var id = document.getElementById('klient').getAttribute('name');
+	klietn_bonus(id);
+}
+
+//Функция для запроса информации о счетах клиента
+function klietn_schet(id){
+	var str = 'zapros=see_schet&id_klient=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('info_turist').innerHTML = a;
+		}
+	});
+}
+
+//Функция для запроса информации о бонусах клиента
+function klietn_bonus(id){
+	var str = 'zapros=see_bonus&id_klient=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function sel(a){
+			document.getElementById('info_turist').innerHTML = a;
+		}
+	});
+}
+
+</script>
+</body>
+</html>
