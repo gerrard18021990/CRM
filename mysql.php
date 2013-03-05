@@ -333,7 +333,12 @@ elseif($zapros == 'save_new_room'){
 	//Блок вывода информации о туристе: счета и бонусы
 	echo "<div id='info_turist'></div><br />";
 	
-	echo "<div id='new_schet' style='display: none'>";
+
+	mysql_close();
+//
+
+
+}elseif($zapros == 'add_new_reck'){
 	echo "<form><fieldset style='width: 400px'><legend>Форма добавления счета</legend>";
 	echo "<table>";
 	echo "<tr><td><span>Дата</span></td><td><input type='date' class='input_text' id='n_date_z' /></td><td><span>Кол-во дней</span></td><td class='td_left'><input type='text' onKeyPress =\"if ((event.keyCode < 48) || (event.keyCode > 57))  event.returnValue = ''\" class='input_text_l' maxlength='3' id='n_days' /></td></tr>";
@@ -353,18 +358,18 @@ elseif($zapros == 'save_new_room'){
 	echo "<tr><td colspan='4' align='center'><input type='button' class='button_s' value='Добавить' onclick='save_new_schet()' title='Сохранить счет' /></td></tr>";
 	echo "</table></fieldset></form></div>";
 	mysql_close();
-//
+
 }elseif($zapros == 'see_schet'){
 	$id_klient = $_POST['id_klient'];
 	$res = mysql_query("SELECT id,date_z,id_obj,sum,manager FROM reckoning WHERE turist='$id_klient'");
 	echo "<table width='650px'>";
-	echo "<tr><th>Дата</th><th>Менеджер</th><th>Объект</th><th>Сумма</th><th></th></tr>";
+	echo "<tr><th>Дата</th><th>Менеджер</th><th>Объект</th><th>Сумма</th><th colspan='2'></th></tr>";
 	while($a = mysql_fetch_assoc($res)){
 		
 		$id = $a['id_obj'];
 		$san = mysql_query("SELECT name FROM object WHERE id='$id'");
 		$s = mysql_fetch_assoc($san);
-		echo "<tr id='tr_h".$a['id']."'><td class='td_left'><strong>".$a['date_z']."</strong></td><td class='td_left'> ".$a['manager']."</td><td class='td_left'><strong>".$s['name']."</strong></td><td class='td_left'><strong>".$a['sum']."</strong></td><td style='text-align: center'><span class='see_schet' title='Развернуть' onclick='show_schet_klient(".$a['id'].")'> Развернуть </span></td></tr>";
+		echo "<tr id='tr_h".$a['id']."'><td class='td_left'><strong>".$a['date_z']."</strong></td><td class='td_left'> ".$a['manager']."</td><td class='td_left'><strong>".$s['name']."</strong></td><td class='td_left'><strong>".$a['sum']."</strong></td><td style='text-align: center'><span class='see_schet' title='Развернуть' onclick='show_schet_klient(".$a['id'].")'> Развернуть </span></td><td><img src='images/edit.jpg' onclick='edit_schet(\"".$a['id']."\")' style='cursor: pointer' title='Редактировать счет' /></td></tr>";
 	}
 	echo "</table>";
 	mysql_close();
@@ -396,7 +401,7 @@ elseif($zapros == 'save_new_room'){
 	$id = $a['id_obj'];
 	$san = mysql_query("SELECT name FROM object WHERE id='$id'");
 	$s = mysql_fetch_assoc($san);
-	echo "<tr id='tr_h".$a['id']."'><td class='td_left'><strong>".$a['date_z']."</strong></td><td class='td_left'> ".$a['manager']."</td><td class='td_left'><strong>".$s['name']."</strong></td><td class='td_left'><strong>".$a['sum']."</strong></td><td style='text-align: center'><span class='see_schet' title='Развернуть' onclick='show_schet_klient(".$a['id'].")'> Развернуть </span></td></tr>";
+	echo "<tr id='tr_h".$a['id']."'><td class='td_left'><strong>".$a['date_z']."</strong></td><td class='td_left'> ".$a['manager']."</td><td class='td_left'><strong>".$s['name']."</strong></td><td class='td_left'><strong>".$a['sum']."</strong></td><td style='text-align: center'><span class='see_schet' title='Развернуть' onclick='show_schet_klient(".$a['id'].")'> Развернуть </span></td><td><img src='images/edit.jpg' onclick='edit_schet(\"".$a['id']."\")' style='cursor: pointer' title='Редактировать счет' /></td></tr>";
 
 	mysql_close();
 //Выбор объекта по региону (новый счет)
@@ -439,10 +444,12 @@ elseif($zapros == 'save_new_room'){
 		$bonus = (int)$sum * 0.02;
 		if(!mysql_query("INSERT INTO reckoning(date, date_z, days, id_reg, id_obj, id_room, sum, 1C, note, turist, manager) VALUES ('$today', '$date_z', '$days', '$id_reg', '$id_obj', '$id_room', '$sum', '$C', '$note', '$id_klient', '$manager')")) $a = 0;
 		$last_id = mysql_insert_id();
+		
+		if($bonus_r < 0){
+			mysql_query("INSERT INTO bonus(date, schet, turist, sum) VALUES ('$today', '$last_id', '$id_klient', '$bonus_r')");
+
 		if(!mysql_query("INSERT INTO bonus(date, schet, turist, sum) VALUES ('$today', '$last_id', '$id_klient', '$bonus')")) $a = 2;
 		}
-	if($bonus_r < 0){
-		mysql_query("INSERT INTO bonus(date, schet, turist, sum) VALUES ('$today', '$last_id', '$id_klient', '$bonus_r')");
 
 	}
 	echo $a;
@@ -477,7 +484,9 @@ elseif($zapros == 'save_new_room'){
 		$s = mysql_query("SELECT name FROM object WHERE id='$id_obj'");
 		$s = mysql_fetch_assoc($s);
 		$obj = $s['name'];
-		echo "<tr><td class='td_left' width='100px'>".$date."</td><td class='td_left' width='300px'>".$obj."</td><td class='td_left' width='50px'>".$sum."</td><td class='td_left' width='50px'>".$bonus."</td></tr>";
+		if($bonus < 0) $color = 'red';
+		else $color = '#444';
+		echo "<tr><td class='td_left' width='100px'>".$date."</td><td class='td_left' width='300px'>".$obj."</td><td class='td_left' width='50px'>".$sum."</td><td class='td_left' width='50px'><span style='color: ".$color."'>".$bonus."</span></td></tr>";
 	}
 	echo "</table>";
 	mysql_close();
@@ -636,6 +645,144 @@ elseif($zapros == 'save_new_room'){
 		for($i=1;$i<=$m;$i++)
 			echo "<div class='no_sel_div' style='width: 148px' id=div".$i." onclick='select_fil_manager(\"".$man[$i]."\")'>".$man[$i]."</div>";
 	mysql_close();
+}elseif($zapros == 'edit_schet'){
+	$id = $_POST['id'];
+	$res = mysql_query("SELECT id,date_z,sum,manager,days,note,1C,id_reg,id_obj,id_room FROM reckoning WHERE id='$id'");
+	while($a = mysql_fetch_assoc($res)){
+		$days = $a['days'];
+		$date = $a['date_z'];
+		$manager = $a['manager'];
+		$sum = $a['sum'];
+		$note = $a['note'];
+		$C = $a['1C'];
+		$id_reg = $a['id_reg'];
+		$id_obj = $a['id_obj'];
+		$id_room = $a['id_room'];
+	}
+
+	echo "<form name='".$id."'><fieldset style='width: 400px'><legend>Форма редактирования счета</legend>";
+	echo "<table>";
+	echo "<tr><td><span>Дата</span></td><td><input value='".$date."' type='date' class='input_text' id='r_date_z' /></td><td><span>Кол-во дней</span></td><td class='td_left'><input value='".$days."' type='text' onKeyPress =\"if ((event.keyCode < 48) || (event.keyCode > 57))  event.returnValue = ''\" class='input_text_l' maxlength='3' id='r_days' /></td></tr>";
+	echo "<tr id='kl_region'>";
+	$res = mysql_query("SELECT id,name FROM region WHERE active=0");
+	echo "<td><span>Регион</span></td><td class='td_left' colspan='3'><select title='Выбрать регион' class='slct' id='sel_nreg' onclick='sel_obj_for_nreck()' onkeypress='sel_obj_for_nreck()' onchange='sel_obj_for_nreck()'  onkeyup='sel_obj_for_nreck()' />";
+	$sel = '';
+	while($a = mysql_fetch_assoc($res)){
+		if($a['id'] == $id_reg){
+			$sel = ' selected ';
+
+		}
+		else $sel = '';
+		echo "<option ".$sel."  value=".$a['id'].">".$a['name']."</option>";
+	}
+	echo "</select></td></tr>";
+	echo "<tr id='kl_object'>";
+	$res = mysql_query("SELECT id,name FROM object WHERE active=0 AND id_reg='$id_reg'");
+	echo "<td><span>Объект</span></td><td class='td_left' colspan='3'><select title='Выбрать объект' class='slct' id='sel_nobj' onclick='sel_obj_for_nreck()' onkeypress='sel_obj_for_nreck()' onchange='sel_obj_for_nreck()'  onkeyup='sel_room_for_nreck()' />";
+	$sel = '';
+	while($a = mysql_fetch_assoc($res)){
+		if($a['id'] == $id_obj)
+			$sel = ' selected ';
+		else $sel = '';
+		echo "<option ".$sel."  value=".$a['id'].">".$a['name']."</option>";
+	}
+	echo "</select></td></tr>";
+
+	echo "<tr id='kl_room'>";
+	echo "<td><span>Номер</span></td><td class='td_left' colspan='3'><select title='Выбрать номер' class='slct' id='sel_nroom' />";
+	$res = mysql_query("SELECT id,name FROM room WHERE active=0 AND id_obj='$id_obj'");
+	$sel = '';
+	while($a = mysql_fetch_assoc($res)){
+		if($a['id'] == $id_room)
+			$sel = ' selected ';
+		else $sel = '';
+		echo "<option ".$sel."  value=".$a['id'].">".$a['name']."</option>";
+	}
+	
+	echo "</select></td></tr>";
+
+	echo "<tr id='add_bonus'><td><span>Сумма</span></td><td class='td_left'><input type='text' disabled value='".$sum."' onchange='change_sum()' onKeyPress =\"if ((event.keyCode < 48) || (event.keyCode > 57))  event.returnValue = ''\" class='input_text' id='n_sum' /></td><td>Редактировать</td><td class='td_left'><input style='width: 15px;' type='checkbox' id='check' onclick='checked_sum()' /></td></tr>";
+	echo "<tr><td><span>Примечание</span></td><td class='td_left' value='".$note."' colspan='3'><input type='text' class='input_text' id='r_note' /></td></tr>";
+	echo "<tr><td><span>Номер счета в 1С</span></td><td class='td_left' colspan='3'><input type='text' value='".$C."' onKeyPress =\"if ((event.keyCode < 48) || (event.keyCode > 57))  event.returnValue = ''\" class='input_text' id='r_C' /></td></tr>";
+	echo "<tr><td><span>Менеджер</span></td><td  class='td_left' colspan='3'><input type='text' value='".$manager."' class='input_text' id='r_manager' /></td></tr>";
+	echo "<tr><td colspan='4' align='center'><input type='button' class='button_s' value='Изменить' onclick='update_schet(\"".$id."\")' title='Изменить счет' /></td></tr>";
+	echo "</table></fieldset></form></div>";
+
+	mysql_close();
+}elseif($zapros == 'update_schet'){
+	$log = $_POST['log'];
+	$sum = $_POST['sum'];
+	$date_z = $_POST['date_z'];
+	$days = $_POST['days'];
+	$manager = $_POST['manager'];
+	$note = $_POST['note'];
+	$C = $_POST['C'];
+	$region = $_POST['region'];
+	$object = $_POST['object'];
+	$room = $_POST['room'];
+	$id = $_POST['id'];
+	$is_bonus = (int)$_POST['bonus'];
+	
+	$b = 0;
+	if(($is_bonus) && ($is_bonus != '0')){
+		$res = mysql_query("SELECT turist FROM bonus WHERE schet='$id'");
+		$r = mysql_fetch_assoc($res);
+		$turist = $r['turist'];
+		$res = mysql_query("SELECT schet,sum FROM bonus WHERE turist='$turist'");
+		$max_bonus = 0;
+		while($r = mysql_fetch_assoc($res)){
+			if($r['schet'] != $id){
+				$bon = (int)$r['sum'];
+				$max_bonus += $bon; 
+			}
+		}
+		if($is_bonus + $max_bonus < 0){
+			$b = 1;
+			echo "Недостаточно бонусов. Максимум: ".$max_bonus;
+		}
+	}
+	if(($log == '1') && ($b == 0)){
+		
+		$time = getdate();
+		$date_log = $time['mday']."-".$time['month']."-".$time['year']."  ".$time['hours'].":".$time['minutes'].":".$time['seconds'];
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$user = $_SERVER['HTTP_USER_AGENT'];
+		$res = mysql_query("SELECT sum,id_obj FROM reckoning WHERE id='$id'");
+		$r = mysql_fetch_assoc($res);
+		$object_log = $r['id_obj'];
+		$old = $r['sum'];
+		
+		$r = mysql_query("INSERT INTO log_summa
+			(date, ip, old, schet, object, user) VALUES
+			('$date_log', '$ip', '$old', '$id', '$object_log', '$user')
+		");
+
+		mysql_query("DELETE FROM bonus WHERE schet='$id'");
+	
+		$res = mysql_query("SELECT turist,date FROM reckoning WHERE id='$id'");
+		$r = mysql_fetch_assoc($res);
+		$date = $r['date'];
+		$turist = $r['turist'];
+		$sum_bonus = (int)$sum * 0.02;
+		if(($is_bonus) && ($is_bonus != '0') && ($b == 0)){
+			
+			mysql_query("INSERT INTO bonus
+					(date, turist, schet, sum) VALUES
+					('$date', '$turist', '$id', '$is_bonus')
+			");
+		}
+
+		mysql_query("INSERT INTO bonus
+				(date, turist, schet, sum) VALUES
+				('$date', '$turist', '$id', '$sum_bonus')
+		");
+
+	}
+	if($b == 0){
+		$a = mysql_query("UPDATE reckoning SET date_z='$date_z', days='$days', manager='$manager', id_reg='$region', id_obj='$object', id_room='$room', 1C='$C', sum='$sum', note='$note' WHERE id='$id'");
+		if($a) echo "1";
+		else echo "0";
+	}
 }
 
 
